@@ -37,11 +37,11 @@ val('practice-subject', 'Quant'); val('pyq-shift', '1'); val('pyq-day', '1'); va
 // Load question data first so ADDITIONAL_QUESTIONS and questionBank exist
 run(readFileSync('question-data.js','utf8'));
 
-// Extract and run script from index.html safely
+// Extract and run the main app script from index.html (skip theme script, run the second one)
 const htmlContent = readFileSync('index.html','utf8');
-const scriptMatch = htmlContent.match(/<script>([\s\S]*?)<\/script>/);
-if (scriptMatch) {
-  run(scriptMatch[1]);
+const scriptMatches = [...htmlContent.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+if (scriptMatches.length > 1) {
+  run(scriptMatches[1][1]); // Run main application script
 }
 
 assert.equal(run('ADDITIONAL_QUESTIONS.length'), 537);
