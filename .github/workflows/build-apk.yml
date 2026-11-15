@@ -23,12 +23,8 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Verify Files & Generate Configs Automatically
+      - name: Verify Files & Generate Configs
         run: |
-          ls -la
           if [ ! -f "index.html" ]; then
             echo "ERROR: index.html is missing from the root folder!"
             exit 1
@@ -41,7 +37,6 @@ jobs:
             "name": "ssc-mock-tester",
             "version": "1.0.0",
             "description": "SSC Mock Tester",
-            "Dependencies": {},
             "devDependencies": {
               "@capacitor/android": "^6.0.0",
               "@capacitor/cli": "^6.0.0",
@@ -73,7 +68,7 @@ jobs:
         working-directory: ./android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
