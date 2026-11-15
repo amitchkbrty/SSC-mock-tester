@@ -14,7 +14,12 @@ const storage = new Map();
 let now = 100000;
 class TestDate extends Date { static now() { return now; } }
 const context = vm.createContext({ console, Date: TestDate, Math, Set, Map,
-  document: { getElementById(id) { if (!elements.has(id)) elements.set(id, element(id)); return elements.get(id); }, createElement: () => element() },
+  document: { 
+    documentElement: { dataset: {} },
+    getElementById(id) { if (!elements.has(id)) elements.set(id, element(id)); return elements.get(id); }, 
+    createElement: () => element() 
+  },
+  matchMedia: () => ({ matches: false }),
   localStorage: { getItem: k => storage.get(k) || null, setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k) },
   window: { scrollTo() {} }, confirm: () => true, setInterval: () => 1, clearInterval() {}, setTimeout() {} });
 const run = code => vm.runInContext(code, context);
