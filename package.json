@@ -1,0 +1,14 @@
+{
+  "name": "ssc-mock-tester",
+  "version": "1.0.0",
+  "description": "SSC Mock Tester",
+  "scripts": {
+    "test": "node app.test.cjs",
+    "prepare:www": "mkdir -p www && cp index.html question-data.js www/"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  }
+}
