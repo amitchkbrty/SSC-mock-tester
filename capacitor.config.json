@@ -1,0 +1,8 @@
+{
+  "appId": "com.sscmocktester.app",
+  "appName": "SSC Mock Tester",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
