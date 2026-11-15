@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#090d16" />
+<title>SSC Mock Tester</title>
+<script>try{const t=localStorage.getItem("ssc_theme")||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<style>
+:root{color-scheme:dark;--bg:#090d16;--bg-grad:radial-gradient(circle at 12% 0%,rgba(56,189,248,.16),transparent 42%),radial-gradient(circle at 92% 18%,rgba(168,85,247,.16),transparent 40%),#090d16;--glass:rgba(255,255,255,.05);--border:rgba(255,255,255,.12);--main:#f1f5f9;--muted:#94a3b8;--accent:#38bdf8;--tint:var(--tint);--tint-strong:var(--tint-strong);--bar:rgba(9,13,22,.72);--menu:rgba(15,23,42,.9);--strong:#fff;--input:rgba(15,23,42,.7);--exp:#cbd5e1;--danger-text:#fda4af;--warn-text:#fcd34d;--shadow:0 10px 30px rgba(0,0,0,.35);--success:#10b981;--danger:#f43f5e;--warning:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg-grad);background-attachment:fixed;transition:background .3s,color .3s;color:var(--main);min-height:100vh;display:flex;flex-direction:column}
+.developer-watermark{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:60;max-width:calc(100vw - 24px);padding:4px 6px;border-radius:6px;background:var(--bar);color:var(--muted);font-size:10px;line-height:1.4;text-align:right;pointer-events:none}
+.glass{background:var(--glass);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:var(--shadow)}
+header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;background:var(--bar);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-wrap:wrap;gap:8px}
+.brand{font-weight:700;cursor:pointer}.brand span{background:linear-gradient(135deg,#38bdf8,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-pills{display:flex;gap:6px;flex-wrap:wrap}
+.nav-pill{padding:6px 11px;border-radius:999px;font-size:.74rem;font-weight:600;border:1px solid var(--border);background:var(--tint);color:var(--muted);cursor:pointer}
+.nav-pill.active{background:rgba(56,189,248,.18);border-color:var(--accent);color:var(--accent)}
+main{width:100%;max-width:860px;margin:0 auto;padding:18px 16px 60px;flex:1}
+.section-title{font-size:.8rem;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);margin:22px 0 12px;font-weight:600}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:560px){.grid-2{grid-template-columns:1fr}}
+.card-btn{padding:16px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;color:var(--main)}
+.card-btn h3{font-size:.96rem}.card-btn p{font-size:.77rem;color:var(--muted);line-height:1.35}
+.tag-pill{display:inline-block;width:fit-content;font-size:.67rem;padding:2px 8px;border-radius:6px;font-weight:600}
+.hidden{display:none!important}
+.inventory-bar{padding:14px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.btn{padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--glass);color:var(--main);font-size:.82rem;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--accent);color:#090d16;border:none}.btn-sm{padding:7px 11px;font-size:.76rem}.btn-danger{background:rgba(244,63,94,.2);border-color:rgba(244,63,94,.45);color:var(--danger-text)}
+select{padding:10px 12px;border-radius:12px;background:var(--input);color:var(--main);border:1px solid var(--border);font-size:.85rem;font-weight:600;width:100%}
+label{font-size:.72rem;color:var(--muted);display:block;margin:10px 0 4px;text-transform:uppercase;letter-spacing:.8px}
+.exam-top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;margin-bottom:10px}
+.subject-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}
+.sub-tab{padding:7px 13px;border-radius:10px;border:1px solid var(--border);background:var(--tint);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.sub-tab.active{background:rgba(56,189,248,.2);border-color:var(--accent);color:var(--strong)}
+.timer-box{font-weight:700;font-size:1.05rem;color:var(--accent);background:rgba(56,189,248,.12);padding:6px 12px;border-radius:10px}
+.timer-danger{color:var(--danger)}
+.q-card{padding:20px;margin-bottom:14px}.q-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;font-size:.76rem;color:var(--muted)}
+.q-text{font-size:1.02rem;line-height:1.55;margin-bottom:18px;font-weight:500}
+.options-list{display:flex;flex-direction:column;gap:10px}
+.opt-btn{width:100%;padding:13px 15px;border-radius:12px;background:var(--tint);border:1px solid var(--border);color:var(--main);text-align:left;font-size:.92rem;cursor:pointer;display:flex;gap:12px;align-items:center}
+.opt-btn.selected{background:rgba(56,189,248,.18);border-color:var(--accent)}
+.opt-letter{width:26px;height:26px;border-radius:50%;background:var(--tint-strong);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0}
+.exam-controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}
+.palette{display:flex;flex-wrap:wrap;gap:6px;padding:14px;margin-top:14px;max-height:220px;overflow-y:auto}
+.pal-dot{width:31px;height:31px;border-radius:8px;border:1px solid var(--border);background:var(--tint);color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer}
+.pal-dot.active{border-color:var(--accent);color:var(--strong)}.pal-dot.answered{background:rgba(16,185,129,.25);border-color:var(--success);color:var(--strong)}.pal-dot.skipped{background:rgba(245,158,11,.22);border-color:var(--warning);color:var(--warn-text)}
+.score-hero{text-align:center;padding:24px 16px;margin-bottom:16px}.score-big{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:6px 0}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}.stat-box{padding:10px 6px;border-radius:12px;background:var(--tint)}.stat-box strong{display:block;font-size:1.05rem}.stat-box span{font-size:.72rem;color:var(--muted)}
+.review-item{padding:16px;margin-bottom:12px;border-left:3px solid var(--border)}.review-item.correct{border-left-color:var(--success)}.review-item.wrong{border-left-color:var(--danger)}.review-item.unattempted{border-left-color:var(--warning)}
+.exp-box{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--tint);font-size:.83rem;color:var(--exp);line-height:1.45}
+.history-card{padding:16px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}.history-top{display:flex;justify-content:space-between;gap:10px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--menu);border:1px solid var(--accent);color:var(--main);backdrop-filter:blur(12px);padding:10px 18px;border-radius:999px;font-size:.82rem;z-index:100}
+.pyq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+@media(max-width:560px){.pyq-grid{grid-template-columns:1fr 1fr}}
+.year-btn{padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--tint);color:var(--main);font-size:.82rem;font-weight:600;cursor:pointer}
+.year-btn.active{background:rgba(56,189,248,.22);border-color:var(--accent);color:var(--strong)}
+[data-theme="light"]{color-scheme:light;--bg:#eef3fb;--bg-grad:radial-gradient(circle at 12% 0%,rgba(56,189,248,.28),transparent 45%),radial-gradient(circle at 92% 18%,rgba(168,85,247,.22),transparent 42%),linear-gradient(180deg,#f5f8ff,#e8eef8);--glass:rgba(255,255,255,.58);--border:rgba(15,23,42,.12);--main:#0f172a;--muted:#475569;--accent:#0284c7;--success:#059669;--danger:#e11d48;--warning:#d97706;--tint:rgba(15,23,42,.04);--tint-strong:rgba(15,23,42,.08);--bar:rgba(255,255,255,.7);--menu:rgba(255,255,255,.92);--strong:#0f172a;--input:rgba(255,255,255,.75);--exp:#334155;--danger-text:#be123c;--warn-text:#b45309;--shadow:0 10px 30px rgba(15,23,42,.08)}
+[data-theme="light"] .btn-primary{color:#fff}
+.header-right{display:flex;gap:6px;align-items:center;margin-left:auto}
+.menu-wrap{position:relative}
+.brand-btn{display:flex;align-items:center;gap:6px;font-size:1rem;font-weight:700;background:none;border:1px solid transparent;border-radius:12px;padding:5px 8px;color:var(--main);cursor:pointer}
+.brand-btn:hover,.brand-btn[aria-expanded="true"]{background:var(--tint-strong);border-color:var(--border)}
+.brand-btn .caret{font-size:.7rem;color:var(--muted);transition:transform .2s}.brand-btn[aria-expanded="true"] .caret{transform:rotate(180deg)}
+.app-menu{position:absolute;top:calc(100% + 8px);left:0;min-width:220px;padding:6px;display:flex;flex-direction:column;gap:2px;background:var(--menu);border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:var(--shadow);z-index:70}
+.menu-item{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;border-radius:10px;background:none;color:var(--main);font-size:.85rem;font-weight:600;text-align:left;cursor:pointer}
+.menu-item:hover,.menu-item:focus-visible,.menu-item.active{background:var(--tint-strong);color:var(--accent)}
+.menu-sep{height:1px;background:var(--border);margin:4px 6px}
+.back-btn{width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+</style>
+</head>
+<body>
+<header><div class="menu-wrap"><button class="brand-btn" id="menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="app-menu" onclick="toggleMenu()">◈ <span class="brand"><span>SSC Mock Tester</span></span><span class="caret">▾</span></button><div class="app-menu hidden" id="app-menu" role="menu"><button class="menu-item" role="menuitem" id="nav-pyq" onclick="menuGo('pyq')">PYQ Patterns</button><button class="menu-item" role="menuitem" onclick="closeMenu();reattemptCurrentOrLast()">↻ Reattempt</button><button class="menu-item" role="menuitem" id="nav-history" onclick="menuGo('history')">History <span>(<span id="hist-count">0</span>)</span></button><button class="menu-item" role="menuitem" id="nav-mistakes" onclick="menuGo('mistakes')">✘ Mistakes <span>(<span id="mistake-count">0</span>)</span></button><div class="menu-sep"></div><button class="menu-item" role="menuitem" id="theme-toggle" onclick="toggleTheme()"><span id="theme-label">Light mode</span><span id="theme-icon">☀</span></button></div></div><div class="header-right"><button class="nav-pill active" id="nav-home" onclick="switchTab('home')">Home</button><button class="nav-pill back-btn" onclick="goBack()" aria-label="Back" title="Back">&lt;</button></div></header>
+<main>
+<section id="home-view">
+<div class="glass inventory-bar"><div><div style="font-weight:700">Total Inventory: <span id="bank-count" style="color:var(--accent)">0</span> Practice Questions • 2017–2026 Archive</div><div style="font-size:.74rem;color:var(--muted)" id="sync-status">CGL • MTS • CHSL • GD • Steno • Pattern practice; not verified past papers</div></div><button class="btn btn-primary" id="update-btn" onclick="autoSyncNewQuestions()">↻ Fetch Fresh Set</button></div>
+<div class="section-title">1. CGL 2026 Timed Mocks</div><div class="grid-2">
+<div class="glass card-btn" onclick="startTest('tier1')"><span class="tag-pill" style="background:rgba(56,189,248,.15);color:#38bdf8">100 Qs • 4 × 15 MIN • +2 / -0.50</span><h3>Tier 1 Full-Length Mock</h3><p>25 each: Reasoning, GK, Maths, English. Timed subjects advance automatically and lock when completed.</p></div>
+<div class="glass card-btn" onclick="startTest('tier2')"><span class="tag-pill" style="background:rgba(168,85,247,.18);color:#c084fc">150 Qs • 135 MINS • +3 / -1.00</span><h3>Tier 2 Paper I — MCQ Session I</h3><p>30 Maths (30m) • 30 Reasoning (30m) • 45 English (40m) • 25 GK (20m) • 20 Computer (15m). MCQ Session I; Computer is qualifying. DEST is separate.</p></div></div>
+<div class="section-title">2. PYQ Strategic Filters</div><div class="grid-2">
+<div class="glass card-btn" onclick="startTest('repeated')"><h3>Repeated Patterns (2017–2026)</h3><p id="rep-count">Loading...</p></div>
+<div class="glass card-btn" onclick="startTest('difficult')"><h3>Most Difficult Mains</h3><p id="diff-count">Loading...</p></div>
+<div class="glass card-btn" onclick="startTest('skip')"><h3>Time Traps</h3><p>Skip in 1st Go drills.</p></div>
+<div class="glass card-btn" onclick="switchTab('pyq')"><h3>→ Open PYQ-Pattern Archive</h3><p>2017–2026 • Year-wise • Shift-wise • Tier 1 & Tier 2</p></div></div>
+<div class="section-title">3. Subject-Wise Practice</div><div class="grid-2">
+<div class="glass card-btn" onclick="openSubject('Quant')"><h3>Quant</h3><p>Choose exam, year and shift.</p></div>
+<div class="glass card-btn" onclick="openSubject('Reasoning')"><h3>Reasoning</h3><p>Choose exam, year and shift.</p></div>
+<div class="glass card-btn" onclick="openSubject('English')"><h3>English</h3><p>Choose exam, year and shift.</p></div>
+<div class="glass card-btn" onclick="openSubject('GK')"><h3>GK / GA</h3><p>Choose exam, year and shift.</p></div>
+<div class="glass card-btn" onclick="openSubject('GS')"><h3>General Science</h3><p>Physics, Chemistry and Biology • exam, year and shift filters.</p></div>
+<div class="glass card-btn" onclick="openSubject('Current Affairs')"><h3>Current Affairs</h3><p>Dated event questions • choose year and shift. Unavailable years remain empty.</p></div>
+<div class="glass card-btn" onclick="openSubject('Computer')"><h3>Computer Knowledge</h3><p>CGL / CHSL syllabus practice • year and shift filters.</p></div></div>
+<div class="glass" style="padding:16px;margin-top:16px"><p style="font-size:.8rem;color:var(--muted)">2026 CGL timing: Tier 1 — 15 minutes per subject. Tier 2 MCQ Session I — 30 / 30 / 40 / 20 / 15 minutes. Standard timing; compensatory time is not included. <a href="https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/Notice_of_adv_cgl_2026.pdf" target="_blank" rel="noopener" style="color:var(--accent)">SSC 2026 notice, pages 25–27</a></p></div>
+</section>
+<section id="subject-view" class="hidden"><div class="section-title">Subject-wise PYQ-pattern practice</div><div class="glass" style="padding:18px"><p style="font-size:.8rem;color:var(--muted)">Practice questions for SSC CGL, MTS, CHSL, GD and Steno. Year/shift assignments are practice groupings, not verified PYQ sources. Current affairs show the event year.</p>
+<label for="practice-subject">Subject</label><select id="practice-subject" onchange="updatePracticeCount()"><option value="Quant">Maths</option><option>Reasoning</option><option>English</option><option value="GK">GK / General Awareness (includes GS and current affairs)</option><option value="GS">General Science</option><option>Current Affairs</option><option>Computer</option></select>
+<label for="practice-exam">Exam</label><select id="practice-exam" onchange="updatePracticeCount()"><option value="all">All SSC exams</option><option>CGL</option><option>MTS</option><option>CHSL</option><option>GD</option><option>Steno</option></select>
+<label for="practice-year">Practice year</label><select id="practice-year" onchange="updatePracticeCount()"><option value="all">All years (2017–2026)</option></select>
+<label for="practice-shift">Practice shift</label><select id="practice-shift" onchange="updatePracticeCount()"><option value="all">All shifts</option><option value="1">Shift 1</option><option value="2">Shift 2</option><option value="3">Shift 3</option></select>
+<p id="practice-count" style="margin:14px 0;color:var(--muted);font-size:.8rem" role="status"></p><button id="practice-start" class="btn btn-primary" onclick="startSubjectPractice()">Start filtered practice</button></div></section>
+<section id="pyq-view" class="hidden">
+<div class="glass" style="padding:18px">
+<div style="font-weight:800;font-size:1.05rem">PYQ Patterns Tier 1 & Tier 2 — 10 Year Practice Archive (2017–2026)</div>
+<div style="font-size:.78rem;color:var(--muted);margin-top:4px">Generated PYQ-pattern practice, not verified past papers. Year and shift labels organize practice sets; they do not establish exam provenance. Filters never fill from other years or shifts.</div>
+<label>Tier</label>
+<div style="display:flex;gap:8px"><button class="btn btn-primary" id="pyq-tier1-btn" onclick="setPyqTier('tier1')">Tier 1 - Prelims</button><button class="btn" id="pyq-tier2-btn" onclick="setPyqTier('tier2')">Tier 2 - Mains</button></div>
+<label>Year (2017 - 2026)</label>
+<div class="pyq-grid" id="pyq-years"></div>
+<label>Shift</label>
+<select id="pyq-shift"><option value="1">Shift 1 - Morning (9 AM)</option><option value="2">Shift 2 - Afternoon (1 PM)</option><option value="3">Shift 3 - Evening (5 PM)</option></select>
+<label>Day / Exam Date Slot</label>
+<select id="pyq-day"><option value="1">Day 1</option><option value="2">Day 2</option><option value="3">Day 3</option><option value="4">Day 4</option></select>
+<label>Questions in this PYQ Set</label>
+<select id="pyq-count"><option value="25">25 Qs - Quick Practice (15 min)</option><option value="50">50 Qs - Half Mock (30 min)</option><option value="100" selected>100 Qs - Full Tier 1 (60 min)</option><option value="150">150 Qs - Tier 2 MCQ Session I (135 min)</option></select>
+<button class="btn btn-primary" style="width:100%;margin-top:16px;padding:14px;font-size:.95rem" onclick="startPyqSet()">▶ Start This PYQ Set - <span id="pyq-preview">Tier 1 • 2026 • Shift 1 • Day 1</span></button>
+<div id="pyq-info" style="font-size:.78rem;color:var(--muted);margin-top:10px;text-align:center">Matching practice questions: <b id="pyq-year-count" style="color:#38bdf8">-</b> • Only the selected year, shift and day are used; smaller sets are allowed.</div>
+</div>
+<div class="section-title">Quick Year Jump - Tier 1</div>
+<div class="pyq-grid" id="pyq-quick"></div>
+</section>
+<section id="exam-view" class="hidden">
+<div class="glass exam-top"><div><div id="test-title" style="font-weight:700"></div><div id="marking-info" style="font-size:.75rem;color:var(--muted)"></div></div><div class="timer-box" id="timer-display">00:00</div></div>
+<div id="section-status" role="status" style="font-size:.8rem;color:var(--accent);margin-bottom:10px"></div><button class="btn btn-sm" id="finish-section" onclick="finishSectionEarly()">Finish this section →</button><div class="subject-tabs" id="subject-tabs-bar" style="margin-top:10px"></div>
+<div class="glass q-card"><div class="q-meta"><span id="q-counter"></span> • <span id="q-subject"></span> • <span id="q-year"></span> • <span id="q-tag" class="tag-pill"></span></div><div class="q-text" id="q-text"></div><div class="options-list" id="options-container"></div><div class="exam-controls"><button class="btn" onclick="prevQ()">← Prev</button><button class="btn" onclick="markSkip()">Skip</button><button class="btn" onclick="clearAns()">Clear</button><button class="btn btn-primary" onclick="nextQ()">Save & Next →</button><button class="btn btn-danger" onclick="if(confirm('Submit?'))submitExam()">Submit</button></div></div>
+<div class="glass palette" id="palette-box"></div>
+</section>
+<section id="result-view" class="hidden">
+<div class="glass score-hero"><div id="res-title-label" style="font-size:.85rem;color:var(--muted)"></div><div class="score-big" id="final-score">0 / 0</div><div id="accuracy-text"></div><div class="stat-row"><div class="stat-box"><strong id="stat-correct">0</strong><span>Correct</span></div><div class="stat-box"><strong id="stat-wrong">0</strong><span>Wrong</span></div><div class="stat-box"><strong id="stat-skipped">0</strong><span>Skipped</span></div><div class="stat-box"><strong id="stat-time">0</strong><span>Time</span></div></div><div style="display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn btn-primary" onclick="reattemptCurrentOrLast()">↻ Reattempt</button><button class="btn" onclick="filterResultReview('wrong')">Review Only Wrong</button><button class="btn" onclick="filterResultReview('all')">Review All</button><button class="btn" onclick="switchTab('home')">← Home</button></div></div>
+<div class="section-title">Solutions</div><div id="review-container"></div>
+</section>
+<section id="mistakes-view" class="hidden"><div class="section-title">Mistake Vault</div><div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-primary" onclick="practiceWrongQuestions()">↻ Reattempt Wrong Qs</button><button class="btn btn-danger" onclick="clearWrongVault()">Clear Log</button></div><div id="mistakes-list"></div></section>
+<section id="history-view" class="hidden"><div class="section-title">Past Attempts</div><button class="btn btn-danger" style="margin-bottom:12px" onclick="clearHistory()">Clear All</button><div id="history-list"></div></section>
+</main>
+<div class="developer-watermark">Developed by Amit Chakraborty</div>
+<div class="toast hidden" id="toast"></div>
+<script src="question-data.js"></script>
+<script>
+const STORAGE_BANK_KEY="ssc_cgl_15yr_bank_v4",STORAGE_HIST_KEY="ssc_cgl_15yr_hist_v4",STORAGE_WRONG_KEY="ssc_cgl_15yr_wrong_v4";
+const SEED=[
+{id:"q1",year:"CGL 2024",subject:"Quant",category:"repeated",q:"If x + 1/x = 5, what is x³ + 1/x³?",opts:["110","125","115","140"],ans:0,exp:"k³-3k = 125-15 = 110."},
+{id:"q2",year:"CGL 2024",subject:"Quant",category:"repeated",q:"Shopkeeper marks 40% above CP, discount 25%. Net profit?",opts:["5%","10%","15%","8%"],ans:0,exp:"+40-25-(40*25)/100 = 5%."},
+{id:"q3",year:"CGL 2023",subject:"Quant",category:"difficult",q:"In ΔABC, bisectors meet at O. If ∠BOC=128°, find ∠A.",opts:["76°","64°","52°","82°"],ans:0,exp:"∠BOC=90+∠A/2 => ∠A=76°."},
+{id:"q5",year:"CGL 2023",subject:"Quant",category:"difficult",q:"If secθ+tanθ=3, find sinθ.",opts:["4/5","3/5","5/13","12/13"],ans:0,exp:"sec-tan=1/3 => sec=5/3 => sin=4/5."},
+{id:"q7",year:"CGL 2025",subject:"Quant",category:"repeated",q:"Train 180m crosses pole in 9s. Time to cross 220m platform?",opts:["20 sec","18 sec","22 sec","15 sec"],ans:0,exp:"Speed 20m/s, distance 400m => 20s."},
+{id:"q12",year:"CGL 2025",subject:"Quant",category:"repeated",q:"If a+b+c=9, ab+bc+ca=26, find a²+b²+c².",opts:["29","31","27","33"],ans:0,exp:"81-52=29."},
+{id:"r1",year:"CGL 2024",subject:"Reasoning",category:"repeated",q:"Series: 7,13,25,49,97,?",opts:["193","191","189","195"],ans:0,exp:"×2-1 => 193."},
+{id:"r5",year:"CGL 2025",subject:"Reasoning",category:"repeated",q:"VICTORY -> YLFWRUB, SUCCESS -> ?",opts:["VXFFHVV","VXEEHVV","UWFFHVV","VXFFGUU"],ans:0,exp:"+3 each letter."},
+{id:"e2",year:"CGL 2024",subject:"English",category:"repeated",q:"Synonym of PERNICIOUS",opts:["Detrimental","Beneficial","Benevolent","Innocuous"],ans:0,exp:"Detrimental."},
+{id:"e5",year:"CGL 2025",subject:"English",category:"repeated",q:"Idiom: 'To bite the bullet'",opts:["Endure painful situation bravely","Start fight","Speak without thinking","Waste money"],ans:0,exp:"Face difficult situation bravely."},
+{id:"g1",year:"CGL 2024",subject:"GK",category:"repeated",q:"Which Article abolishes Untouchability?",opts:["Article 17","Article 15","Article 18","Article 21"],ans:0,exp:"Article 17."},
+{id:"g9",year:"CGL 2025",subject:"GK",category:"repeated",q:"Ex-officio Chairman of Rajya Sabha?",opts:["Vice President","President","Prime Minister","Speaker"],ans:0,exp:"Vice President."}
+];
+function shuffleOpts(correct, distractors){let all=[correct,...distractors];let idxs=all.map((_,i)=>i).sort(()=>Math.random()-.5);let opts=idxs.map(i=>all[i]);return {opts,ans:opts.indexOf(correct)}}
+function genBank(){
+let bank=[...SEED];const years=[];for(let y=2017;y<=2026;y++)years.push(y);
+const gkPool=[
+["Which Article provides Right to Equality?","Article 14","Article 15","Article 16","Article 17",0,"Article 14 = Equality before law."],
+["Which is the largest state of India by area?","Rajasthan","Madhya Pradesh","Maharashtra","Uttar Pradesh",0,"Rajasthan is largest by area."],
+["Who was the first President of India?","Dr. Rajendra Prasad","Dr. S. Radhakrishnan","Dr. A.P.J. Abdul Kalam","Dr. Zakir Husain",0,"Dr. Rajendra Prasad (1950-62)."],
+["Which river is called Dakshin Ganga?","Godavari","Krishna","Kaveri","Mahanadi",0,"Godavari."],
+["Which vitamin deficiency causes Scurvy?","Vitamin C","Vitamin D","Vitamin B12","Vitamin K",0,"Vitamin C / Ascorbic Acid."],
+["Battle of Plassey was fought in?","1757","1764","1761","1857",0,"1757."],
+["Who founded Satya Shodhak Samaj?","Jyotiba Phule","Raja Ram Mohan Roy","Dayanand Saraswati","Vivekananda",0,"Jyotiba Phule, 1873."],
+["Which instrument measures atmospheric pressure?","Barometer","Hygrometer","Anemometer","Lactometer",0,"Barometer."],
+["Which is the smallest state by area?","Goa","Sikkim","Tripura","Manipur",0,"Goa."],
+["Which Article abolishes titles?","Article 18","Article 17","Article 19","Article 20",0,"Article 18."],
+["Taj Mahal is located on bank of which river?","Yamuna","Ganga","Chambal","Betwa",0,"Yamuna."],
+["Who wrote National Anthem?","Rabindranath Tagore","Bankim Chandra","Sarojini Naidu","Subhas Chandra Bose",0,"Tagore - Jana Gana Mana."],
+["Which gas is used in balloons?","Helium","Oxygen","Hydrogen","Nitrogen",0,"Helium (safe)."],
+["Capital of Australia?","Canberra","Sydney","Melbourne","Perth",0,"Canberra."],
+["Which is the longest river in India?","Ganga","Godavari","Yamuna","Brahmaputra",0,"Ganga (2525 km)."],
+["Who is known as Father of Indian Constitution?","Dr. B.R. Ambedkar","Mahatma Gandhi","Jawaharlal Nehru","Dr. Rajendra Prasad",0,"Ambedkar chaired Drafting Committee."],
+["Which is the largest planet?","Jupiter","Saturn","Earth","Mars",0,"Jupiter."],
+["Which blood group is universal donor?","O Negative","AB Positive","A Positive","B Positive",0,"O Negative."],
+["Which Article gives Right to Education?","Article 21A","Article 19","Article 32","Article 370",0,"21A - 86th Amendment."],
+["Who was first woman to win Bharat Ratna?","Indira Gandhi","Sarojini Naidu","Lata Mangeshkar","Pratibha Patil",0,"Indira Gandhi, 1971."],
+["Which is the deepest ocean?","Pacific","Atlantic","Indian","Arctic",0,"Pacific - Mariana Trench."],
+["Which gas is called laughing gas?","Nitrous Oxide","Carbon Dioxide","Oxygen","Methane",0,"N2O."],
+["Capital of Japan?","Tokyo","Kyoto","Osaka","Seoul",0,"Tokyo."],
+["Which is the national animal of India?","Bengal Tiger","Lion","Elephant","Leopard",0,"Bengal Tiger."],
+["Who wrote 'Discovery of India'?","Jawaharlal Nehru","Gandhi","Tagore","Bhagat Singh",0,"Nehru."]
+];
+const engPool=[
+["Synonym of ABANDON","Leave","Keep","Hold","Catch",0,"Abandon = leave completely."],
+["Antonym of TRANSPARENT","Opaque","Clear","Obvious","Lucid",0,"Opaque."],
+["One word: One who can use both hands","Ambidextrous","Ambiguous","Versatile","Bilingual",0,"Ambidextrous."],
+["Correctly spelt word","Accommodation","Accomodation","Acommodation","Accommodetion",0,"Double c, double m."],
+["Idiom: To bite the dust","To be defeated","To eat dust","To work hard","To hide",0,"To be defeated."],
+["Synonym of CANDID","Frank","Rude","Shy","Cunning",0,"Candid = frank."],
+["Antonym of ANCIENT","Modern","Old","Antique","Historic",0,"Modern."],
+["One word: Fear of heights","Acrophobia","Claustrophobia","Hydrophobia","Nyctophobia",0,"Acrophobia."],
+["Synonym of EPHEMERAL","Short-lived","Eternal","Permanent","Durable",0,"Ephemeral = short-lived."],
+["Antonym of EXPAND","Contract","Extend","Enlarge","Stretch",0,"Contract."]
+];
+years.forEach(year=>{
+  for(let i=0;i<8;i++){
+    let k=4+((year+i*7)%9); let val=k*k*k-3*k;
+    let o=shuffleOpts(String(val),[String(val+5),String(val-5),String(val+10)]);
+    bank.push({id:`Q-${year}-${i}-a`,year:`CGL ${year}`,subject:"Quant",category:i%3==0?"difficult":"repeated",shift:(i%3)+1,day:(i%4)+1,q:`PYQ Pattern ${year} Shift ${(i%3)+1}: If x + 1/x = ${k}, find x³ + 1/x³?`,opts:o.opts,ans:o.ans,exp:`Formula k³-3k = ${k}³-3(${k}) = ${val}.`});
+    let d2=10+(i*5)%20; let net=40-d2-(40*d2)/100;
+    let o2=shuffleOpts(net+"%",[(net+5)+"%",(net-5)+"%",(net+10)+"%"]);
+    bank.push({id:`Q-${year}-${i}-b`,year:`CGL ${year}`,subject:"Quant",category:"repeated",shift:(i%3)+1,day:(i%4)+1,q:`PYQ Pattern ${year}: Shopkeeper marks 40% above CP and gives ${d2}% discount. Net profit?`,opts:o2.opts,ans:o2.ans,exp:`+40 - ${d2} - (40×${d2})/100 = ${net}% profit.`});
+    let speed=15+i*2, len=speed*9; let plat=180+i*20; let t=Math.round((len+plat)/speed);
+    let o3=shuffleOpts(t+" sec",[(t+2)+" sec",(t-2)+" sec",(t+5)+" sec"]);
+    bank.push({id:`Q-${year}-${i}-c`,year:`CGL ${year}`,subject:"Quant",category:"repeated",shift:(i%3)+1,day:(i%4)+1,q:`PYQ Pattern ${year}: Train ${len}m long crosses pole in 9 sec. Time to cross ${plat}m platform?`,opts:o3.opts,ans:o3.ans,exp:`Speed ${speed} m/s, distance ${len+plat}m => ${t} sec.`});
+  }
+  for(let i=0;i<6;i++){
+    let start=5+i+year%5; let seq=[start, start*2-1, (start*2-1)*2-1, ((start*2-1)*2-1)*2-1]; let next=seq[3]*2-1;
+    let o=shuffleOpts(String(next),[String(next+2),String(next-2),String(next+4)]);
+    bank.push({id:`R-${year}-${i}`,year:`CGL ${year}`,subject:"Reasoning",category:"repeated",shift:(i%3)+1,day:(i%4)+1,q:`PYQ Pattern ${year} Shift ${(i%3)+1}: Series: ${seq.join(", ")}, ?`,opts:o.opts,ans:o.ans,exp:`Pattern ×2-1 each step => ${next}.`});
+    let word=["CAT","DOG","SUN","MOON"][i%4]; let shift=2+i%3; let coded=word.split("").map(c=>String.fromCharCode(c.charCodeAt(0)+shift)).join("");
+    let o2=shuffleOpts(coded,[word, coded.split("").reverse().join(""), coded.toLowerCase()]);
+    bank.push({id:`R-${year}-${i}-code`,year:`CGL ${year}`,subject:"Reasoning",category:"difficult",shift:(i%3)+1,day:(i%4)+1,q:`PYQ Pattern ${year}: If ${word} is coded with +${shift} shift, what is code?`,opts:o2.opts,ans:o2.ans,exp:`Each letter +${shift} => ${coded}.`});
+  }
+  engPool.forEach((e,idx)=>{let o=shuffleOpts(e[1],[e[2],e[3],e[4]]);bank.push({id:`E-${year}-${idx}`,year:`CGL ${year}`,subject:"English",category:idx%3==0?"difficult":"repeated",shift:(idx%3)+1,day:(idx%4)+1,q:`PYQ Pattern ${year} Shift ${(idx%3)+1}: ${e[0]}`,opts:o.opts,ans:o.ans,exp:e[5]})});
+  gkPool.forEach((g,idx)=>{let o=shuffleOpts(g[1],[g[2],g[3],g[4]]);bank.push({id:`G-${year}-${idx}`,year:`CGL ${year}`,subject:"GK",category:idx%4==0?"difficult":"repeated",shift:(idx%3)+1,day:(idx%4)+1,q:`PYQ Pattern ${year} Shift ${(idx%3)+1}: ${g[0]}`,opts:o.opts,ans:o.ans,exp:g[5]})});
+});
+let seen=new Set();bank=bank.filter(q=>{if(seen.has(q.id))return false;seen.add(q.id);return true});
+return bank;
+}
+let questionBank=genBank();
+// --- EXPANDED REPOSITORY: EXTRA_BANK 200+ more ---
+const EXTRA_BANK=[];
+for(let i=1;i<=100;i++){
+  let a=10+(i*3)%40, b=20+(i*7)%50; let avg=(a+b)/2;
+  let o1=shuffleOpts(String(avg),[String(avg+5),String(avg-5),String(avg+10)]);
+  EXTRA_BANK.push({id:`XQ-avg-${i}`,year:`CGL ${2017+(i%10)}`,subject:"Quant",category:i%4==0?"difficult":"repeated",shift:(i%3)+1,day:(i%4)+1,q:`PYQ Pattern: Average of ${a} and ${b} is?`,opts:o1.opts,ans:o1.ans,exp:`(${a}+${b})/2 = ${avg}.`});
+  let p=5000+i*100, r=5+(i%8), t=2+(i%3); let si=p*r*t/100;
+  let o2=shuffleOpts("₹"+si,["₹"+(si+200),"₹"+(si-200),"₹"+(si+500)]);
+  EXTRA_BANK.push({id:`XQ-si-${i}`,year:`CGL ${2017+(i%10)}`,subject:"Quant",category:"repeated",shift:(i%3)+1,day:(i%4)+1,q:`PYQ Pattern: SI on ₹${p} at ${r}% for ${t} years?`,opts:o2.opts,ans:o2.ans,exp:`SI = P×R×T/100 = ${si}.`});
+}
+questionBank=[...questionBank,...EXTRA_BANK,...ADDITIONAL_QUESTIONS].map(q=>({...q,...(q.id.startsWith("expanded-")?shuffleOpts(q.opts[q.ans],q.opts.filter((_,i)=>i!==q.ans)):{}),practiceYear:Number(q.year.match(/20\d{2}/)?.[0]),exams:q.exams||["CGL"],kind:"Pattern practice"})).filter(q=>q.practiceYear>=2017&&q.practiceYear<=2026);
+{let s=new Set();questionBank=questionBank.filter(q=>{if(s.has(q.q.toLowerCase()))return false;s.add(q.q.toLowerCase());return true;});}
+let attemptHistory=[],wrongVault=[],lastTestConfig={mode:"tier1",customList:null,title:"Tier 1"},currentTestTitle="",activeQuestions=[],activeSubjectTab="ALL",userAnswers=[],skippedFlags=[],currentIndex=0,timerInterval=null,timeLeft=0,totalTimeAllowed=0,posMark=2,negMark=0.5,latestRecord=null;
+let pyqTier="tier1",pyqYear=2026;
+function initApp(){try{attemptHistory=JSON.parse(localStorage.getItem(STORAGE_HIST_KEY)||"[]")}catch(e){attemptHistory=[]}try{wrongVault=JSON.parse(localStorage.getItem(STORAGE_WRONG_KEY)||"[]")}catch(e){wrongVault=[]}refreshCounts();buildPyqUI();updatePyqPreview();initPracticeFilters()}
+function refreshCounts(){document.getElementById("bank-count").textContent=questionBank.length;document.getElementById("hist-count").textContent=attemptHistory.length;document.getElementById("mistake-count").textContent=wrongVault.length;document.getElementById("rep-count").textContent=questionBank.filter(q=>q.category==="repeated").length+" repeated-pattern practice Qs";document.getElementById("diff-count").textContent=questionBank.filter(q=>q.category==="difficult").length+" advanced practice Qs"}
+function showToast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),3000)}
+function decodeHTML(h){const t=document.createElement("textarea");t.innerHTML=h;return t.value}
+// --- NEW MULTI-SOURCE FETCHER ---
+const FETCH_SOURCES=[
+  {name:"OpenTDB GK",url:"https://opentdb.com/api.php?amount=50&category=9&type=multiple"},
+  {name:"OpenTDB Science",url:"https://opentdb.com/api.php?amount=50&category=17&type=multiple"},
+  {name:"OpenTDB History",url:"https://opentdb.com/api.php?amount=50&category=23&type=multiple"},
+  {name:"OpenTDB Geography",url:"https://opentdb.com/api.php?amount=50&category=22&type=multiple"},
+  {name:"OpenTDB Computers",url:"https://opentdb.com/api.php?amount=50&category=18&type=multiple"},
+  {name:"Trivia API GK",url:"https://the-trivia-api.com/v2/questions?limit=50&categories=general_knowledge,science,history,geography"},
+  {name:"OpenTDB Mixed",url:"https://opentdb.com/api.php?amount=50&type=multiple"}
+];
+async function autoSyncNewQuestions(){
+  const btn=document.getElementById("update-btn"),st=document.getElementById("sync-status");
+  btn.disabled=true;btn.textContent="↻ Syncing 7 sources...";st.textContent="Fetching from OpenTDB + Trivia API + GitHub...";
+  let added=0,tried=0,failed=0;const existing=new Set(questionBank.map(x=>x.q.toLowerCase().trim()));
+  function addOpenTDB(item,source){const q=decodeHTML(item.question);if(!q||existing.has(q.toLowerCase()))return;const correct=decodeHTML(item.correct_answer);const all=[...item.incorrect_answers.map(decodeHTML),correct].sort(()=>Math.random()-.5);questionBank.push({id:"live_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),year:"GK Live • "+source,subject:"GK",category:item.difficulty==="hard"?"difficult":"repeated",shift:1,day:1,q:q,opts:all,ans:all.indexOf(correct),exp:`Live GK Practice (${item.difficulty}). Correct: "${correct}". Category: ${item.category}.`});existing.add(q.toLowerCase());added++;}
+  function addTriviaAPI(item){const q=item.question?.text||item.question;if(!q||existing.has(q.toLowerCase()))return;const correct=item.correctAnswer;const all=[...item.incorrectAnswers,correct].sort(()=>Math.random()-.5);questionBank.push({id:"trivia_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),year:"GK Live • Trivia API",subject:"GK",category:item.difficulty==="hard"?"difficult":"repeated",shift:1,day:1,q:q,opts:all,ans:all.indexOf(correct),exp:`Live Practice. Correct: "${correct}". Category: ${item.category}.`});existing.add(q.toLowerCase());added++;}
+  const results=await Promise.allSettled(FETCH_SOURCES.map(s=>fetch(s.url).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json().then(data=>({source:s.name,data}))})));
+  results.forEach(res=>{tried++;if(res.status==="rejected"){failed++;return;}const{source,data}=res.value;try{if(data.results&&Array.isArray(data.results)){data.results.forEach(it=>addOpenTDB(it,source));}else if(Array.isArray(data)){data.forEach(it=>addTriviaAPI(it));}}catch(e){failed++;}});
+  try{const gh=await fetch("https://raw.githubusercontent.com/uberspot/OpenTriviaQA/master/categories/history.json");if(gh.ok){const j=await gh.json();if(Array.isArray(j))j.slice(0,20).forEach(it=>{if(it.question&&it.answer){const q=it.question;if(!existing.has(q.toLowerCase())){questionBank.push({id:"gh_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),year:"GK Live • GitHub",subject:"GK",category:"repeated",shift:1,day:1,q:q,opts:[it.answer,"Option B","Option C","Option D"],ans:0,exp:`Open dataset. Correct: ${it.answer}`});existing.add(q.toLowerCase());added++;}}});}}catch(e){}
+  const seenQ=new Set();questionBank=questionBank.filter(q=>{if(seenQ.has(q.q.toLowerCase()))return false;seenQ.add(q.q.toLowerCase());return true;});
+  localStorage.setItem(STORAGE_BANK_KEY,JSON.stringify(questionBank));refreshCounts();
+  const time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  if(added>0){st.textContent=`Synced at ${time} • ${questionBank.length} unique Qs • +${added} new from ${tried-failed}/${tried} sources`;showToast(`+${added} new questions added! Total: ${questionBank.length}`);}else{st.textContent=`Synced at ${time} • ${questionBank.length} unique Qs • Offline / Already have these - bank shuffled`;showToast(`No new Qs (already have them) - Bank shuffled! Total: ${questionBank.length}`);}
+  btn.disabled=false;btn.textContent="↻ Fetch Fresh Set";
+}
+function buildPyqUI(){const wrap=document.getElementById("pyq-years");wrap.innerHTML="";for(let y=2026;y>=2017;y--){const b=document.createElement("button");b.className="year-btn"+(y===pyqYear?" active":"");b.textContent=y;b.onclick=()=>{pyqYear=y;buildPyqUI();updatePyqPreview()};wrap.appendChild(b)}const q=document.getElementById("pyq-quick");q.innerHTML="";[2026,2025,2024,2023,2022].forEach(y=>{const b=document.createElement("button");b.className="year-btn";b.textContent=`${y} Tier 1 • Start`;b.onclick=()=>{pyqYear=y;setPyqTier('tier1');document.getElementById("pyq-count").value="100";startPyqSet()};q.appendChild(b)})}
+function setPyqTier(t){pyqTier=t;document.getElementById("pyq-count").value=t==="tier1"?"100":"150";document.getElementById("pyq-tier1-btn").className=t==="tier1"?"btn btn-primary":"btn";document.getElementById("pyq-tier2-btn").className=t==="tier2"?"btn btn-primary":"btn";updatePyqPreview()}
+function updatePyqPreview(){const s=document.getElementById("pyq-shift").value,d=document.getElementById("pyq-day").value;document.getElementById("pyq-preview").textContent=`${pyqTier==="tier1"?"Tier 1":"Tier 2"} • ${pyqYear} • Shift ${s} • Day ${d}`;const cnt=questionBank.filter(q=>(q.exams||[]).includes("CGL")&&(pyqTier!=="tier1"||q.subject!=="Computer")&&q.practiceYear===pyqYear&&q.shift===Number(s)&&q.day===Number(d)).length;document.getElementById("pyq-year-count").textContent=cnt}
+document.getElementById("pyq-shift").addEventListener("change",updatePyqPreview);document.getElementById("pyq-day").addEventListener("change",updatePyqPreview);document.getElementById("pyq-count").addEventListener("change",updatePyqPreview);
+function startPyqSet(){const shift=Number(document.getElementById("pyq-shift").value),day=Number(document.getElementById("pyq-day").value),count=Number(document.getElementById("pyq-count").value);const selected=questionBank.filter(q=>(q.exams||[]).includes("CGL")&&(pyqTier!=="tier1"||q.subject!=="Computer")&&q.practiceYear===pyqYear&&q.shift===shift&&q.day===day).sort(()=>Math.random()-.5).slice(0,count);startTest("custom",selected,`CGL PYQ-pattern ${pyqTier==="tier1"?"Tier 1":"Tier 2"} • ${pyqYear} • Shift ${shift} • Day ${day} (${selected.length} Qs)`);}
+
+function switchTab(tab,remember=true){if(examRunning&&currentView==="exam"){if(!confirm("Leave this test? This attempt will end without saving."))return;examRunning=false;}clearInterval(timerInterval);if(remember)recordView(tab);["home-view","exam-view","result-view","history-view","mistakes-view","pyq-view","subject-view"].forEach(id=>document.getElementById(id).classList.add("hidden"));["nav-home","nav-history","nav-mistakes","nav-pyq"].forEach(id=>document.getElementById(id).classList.remove("active"));if(tab==="subject"){document.getElementById("subject-view").classList.remove("hidden");updatePracticeCount()}else if(tab==="home"){document.getElementById("home-view").classList.remove("hidden");document.getElementById("nav-home").classList.add("active")}else if(tab==="pyq"){document.getElementById("pyq-view").classList.remove("hidden");document.getElementById("nav-pyq").classList.add("active")}else if(tab==="history"){renderHistory();document.getElementById("history-view").classList.remove("hidden");document.getElementById("nav-history").classList.add("active")}else if(tab==="mistakes"){renderMistakes();document.getElementById("mistakes-view").classList.remove("hidden");document.getElementById("nav-mistakes").classList.add("active")}}
+function buildPaper(blueprint){const quotas=blueprint==="tier1"?{Reasoning:25,GK:25,Quant:25,English:25}:{Quant:30,Reasoning:30,English:45,GK:25,Computer:20};let paper=[];Object.keys(quotas).forEach(subj=>{const pool=[...questionBank.filter(q=>q.subject===subj&&(q.exams||[]).includes("CGL"))].sort(()=>Math.random()-.5);paper.push(...pool.slice(0,quotas[subj]))});let seenQ=new Set();paper=paper.filter(q=>{if(seenQ.has(q.q))return false;seenQ.add(q.q);return true});return paper}
+function startTest(mode,customList=null,customTitle=null){lastTestConfig={mode,customList,title:customTitle};let filtered=[];posMark=2;negMark=.5;let title="",dur=0;if(customList){filtered=[...customList];title=customTitle||"Custom Drill";dur=filtered.length*45;if(title.includes("Tier 2")){posMark=3;negMark=1;dur=filtered.length*60}}else if(mode==="tier1"){filtered=buildPaper("tier1");title=`Tier 1 Full Mock - ${filtered.length} practice Qs`;dur=60*60}else if(mode==="tier2"){filtered=buildPaper("tier2");posMark=3;negMark=1;title=`Tier 2 Mains - ${filtered.length} practice Qs`;dur=135*60}else if(mode==="repeated"){filtered=questionBank.filter(q=>q.category==="repeated").sort(()=>Math.random()-.5).slice(0,50);title="Repeated-Pattern Practice (50 Qs)";dur=filtered.length*45}else if(mode==="difficult"){filtered=questionBank.filter(q=>q.category==="difficult").sort(()=>Math.random()-.5).slice(0,50);posMark=3;negMark=1;title="Most Difficult (50 Qs)";dur=filtered.length*60}else if(mode==="skip"){filtered=questionBank.filter(q=>q.category==="skip").sort(()=>Math.random()-.5).slice(0,25);title="Time Traps (25 Qs)";dur=filtered.length*45}else{filtered=questionBank.filter(q=>q.subject===mode).sort(()=>Math.random()-.5).slice(0,50);title=`${mode} Practice (50 Qs)`;dur=filtered.length*45}if(!filtered.length){showToast("No questions match these filters.");return}currentTestTitle=title;activeQuestions=filtered;configureSections(mode,title);activeSubjectTab=examSections[0].subject;userAnswers=new Array(filtered.length).fill(null);skippedFlags=new Array(filtered.length).fill(false);currentIndex=0;totalTimeAllowed=examSections.reduce((n,s)=>n+s.seconds,0);timeLeft=totalTimeAllowed;sectionStartedAt=Date.now();sectionDeadline=sectionStartedAt+examSections[0].seconds*1000;currentIndex=activeQuestions.findIndex(q=>q.subject===activeSubjectTab);document.getElementById("test-title").textContent=title;document.getElementById("marking-info").textContent=`+${posMark.toFixed(1)} | -${negMark.toFixed(2)} • ${filtered.length} questions`;["home-view","result-view","history-view","mistakes-view","pyq-view","subject-view"].forEach(id=>document.getElementById(id).classList.add("hidden"));["nav-home","nav-history","nav-mistakes","nav-pyq"].forEach(id=>document.getElementById(id).classList.remove("active"));recordView("exam");document.getElementById("exam-view").classList.remove("hidden");renderSubjectTabs();renderQuestion();startTimer()}
+function reattemptCurrentOrLast(){startTest(lastTestConfig.mode,lastTestConfig.customList,lastTestConfig.title);showToast("Mock restarted!")}
+function renderSubjectTabs(){const bar=document.getElementById("subject-tabs-bar");bar.innerHTML="";examSections.forEach((section,i)=>{const b=document.createElement("button");b.className="sub-tab"+(i===sectionIndex?" active":"");b.textContent=`${section.subject} · ${i<sectionIndex?"Completed":i===sectionIndex?"Active":"Locked"}`;b.disabled=i!==sectionIndex;bar.appendChild(b)});}
+function startTimer(){clearInterval(timerInterval);updateTimerUI();timerInterval=setInterval(tickTimer,250)}
+function tickTimer(){const remaining=Math.max(0,Math.ceil((sectionDeadline-Date.now())/1000));timeLeft=remaining+examSections.slice(sectionIndex+1).reduce((n,s)=>n+s.seconds,0);if(Date.now()>=sectionDeadline){advanceSection(false);return}updateTimerUI()}
+function updateTimerUI(){const remaining=Math.max(0,Math.ceil((sectionDeadline-Date.now())/1000)),el=document.getElementById("timer-display");el.textContent=`${String(Math.floor(remaining/60)).padStart(2,"0")}:${String(remaining%60).padStart(2,"0")}`;el.classList.toggle("timer-danger",remaining<=60);document.getElementById("section-status").textContent=`Section ${sectionIndex+1} / ${examSections.length}: ${activeSubjectTab} • ${examSections[sectionIndex].seconds/60} min • Completed sections cannot be reopened.`;document.getElementById("finish-section").textContent=sectionIndex===examSections.length-1?"Finish section & submit":"Finish this section →";}
+
+function renderQuestion(){if(!activeQuestions[currentIndex]||activeQuestions[currentIndex].subject!==activeSubjectTab)return;const q=activeQuestions[currentIndex];document.getElementById("q-counter").textContent=`Q ${currentIndex+1}/${activeQuestions.length}`;document.getElementById("q-subject").textContent=q.subject;document.getElementById("q-year").textContent=`SSC ${(q.exams||["General practice"]).join(" / ")} • ${q.kind||"Pattern practice"} • ${q.year||"Undated"}${q.shift?" • Shift "+q.shift:""}${q.topic?" • "+q.topic:""}`;const tag=document.getElementById("q-tag");tag.className="tag-pill";if(q.category==="repeated"){tag.textContent="Most Repeated";tag.style.background="rgba(16,185,129,.15)";tag.style.color="#34d399"}else if(q.category==="difficult"){tag.textContent="High Difficulty";tag.style.background="rgba(168,85,247,.18)";tag.style.color="#c084fc"}else{tag.textContent="Skip in 1st Go";tag.style.background="rgba(244,63,94,.16)";tag.style.color="#fb7185"}document.getElementById("q-text").textContent=q.q;const c=document.getElementById("options-container");c.innerHTML="";const L=["A","B","C","D"];q.opts.forEach((o,i)=>{const b=document.createElement("button");b.className="opt-btn"+(userAnswers[currentIndex]===i?" selected":"");b.innerHTML=`<span class="opt-letter">${L[i]}</span><span>${o}</span>`;b.onclick=()=>selectOption(i);c.appendChild(b)});renderSubjectTabs();renderPalette()}
+function selectOption(i){if(!sectionOpen())return;userAnswers[currentIndex]=i;skippedFlags[currentIndex]=false;renderQuestion()}
+function clearAns(){if(!sectionOpen())return;userAnswers[currentIndex]=null;skippedFlags[currentIndex]=false;renderQuestion()}
+function markSkip(){if(!sectionOpen())return;userAnswers[currentIndex]=null;skippedFlags[currentIndex]=true;nextQ()}
+function nextQ(){if(!sectionOpen())return;const n=activeQuestions.findIndex((q,i)=>i>currentIndex&&q.subject===activeSubjectTab);if(n!==-1){currentIndex=n;renderQuestion()}else showToast("End of section. Review answers or finish this section.")}
+function prevQ(){if(!sectionOpen())return;for(let i=currentIndex-1;i>=0;i--){if(activeQuestions[i].subject===activeSubjectTab){currentIndex=i;renderQuestion();return}}}
+
+function renderPalette(){const box=document.getElementById("palette-box");if(!box)return;box.innerHTML="";activeQuestions.forEach((q,idx)=>{if(activeSubjectTab!=="ALL"&&q.subject!==activeSubjectTab)return;const d=document.createElement("button");d.className="pal-dot";if(idx===currentIndex)d.classList.add("active");if(userAnswers[idx]!==null)d.classList.add("answered");else if(skippedFlags[idx])d.classList.add("skipped");d.textContent=idx+1;d.onclick=()=>{if(!sectionOpen())return;currentIndex=idx;renderQuestion()};box.appendChild(d)})}
+function submitExam(){if(!examRunning)return;tickRemaining();examRunning=false;clearInterval(timerInterval);let correct=0,wrong=0,skipped=0;const review=[];const nw=[];activeQuestions.forEach((q,idx)=>{const ch=userAnswers[idx];let st="unattempted";if(ch===null)skipped++;else if(ch===q.ans){correct++;st="correct"}else{wrong++;st="wrong"}review.push({rawQ:q,subject:q.subject,year:`${q.year||"Undated"} • SSC ${(q.exams||["General practice"]).join(" / ")} • Pattern practice`,q:q.q,userText:ch!==null?q.opts[ch]:"Not Attempted",correctText:q.opts[q.ans],exp:q.exp,status:st});if(st==="wrong")nw.push({id:q.id,rawQ:q,subject:q.subject,year:`${q.year||"Undated"} • SSC ${(q.exams||["General practice"]).join(" / ")} • Pattern practice`,q:q.q,userText:q.opts[ch],correctText:q.opts[q.ans],exp:q.exp,testName:currentTestTitle,date:new Date().toLocaleDateString()})});if(nw.length){const m=new Map();wrongVault.forEach(w=>m.set(w.q,w));nw.forEach(w=>m.set(w.q,w));wrongVault=Array.from(m.values());localStorage.setItem(STORAGE_WRONG_KEY,JSON.stringify(wrongVault))}const score=(correct*posMark)-(wrong*negMark),max=activeQuestions.length*posMark,att=correct+wrong,acc=att>0?Math.round(correct/att*100):0,timeUsed=Math.round(elapsedSeconds+Math.min(examSections[sectionIndex].seconds,Math.max(0,(Date.now()-sectionStartedAt)/1000)));const rec={id:Date.now(),date:new Date().toLocaleString([],{dateStyle:"medium",timeStyle:"short"}),title:currentTestTitle,score:score.toFixed(2),maxScore:max.toFixed(2),acc,correct,wrong,skipped,timeUsed,reviewItems:review};latestRecord=rec;attemptHistory.unshift(rec);localStorage.setItem(STORAGE_HIST_KEY,JSON.stringify(attemptHistory));refreshCounts();displayScorecard(rec)}
+function displayScorecard(r){recordView("result");latestRecord=r;document.getElementById("res-title-label").textContent=`${r.title} • ${r.date}`;document.getElementById("final-score").textContent=`${r.score} / ${r.maxScore}`;document.getElementById("accuracy-text").textContent=`Accuracy: ${r.acc}% • Attempted: ${r.correct+r.wrong}/${r.reviewItems.length}`;document.getElementById("stat-correct").textContent=r.correct;document.getElementById("stat-wrong").textContent=r.wrong;document.getElementById("stat-skipped").textContent=r.skipped;document.getElementById("stat-time").textContent=`${r.timeUsed}s`;filterResultReview("all");["home-view","exam-view","history-view","mistakes-view","pyq-view","subject-view"].forEach(id=>document.getElementById(id).classList.add("hidden"));document.getElementById("result-view").classList.remove("hidden");window.scrollTo(0,0)}
+function filterResultReview(f){if(!latestRecord)return;const c=document.getElementById("review-container");c.innerHTML="";latestRecord.reviewItems.forEach((it,idx)=>{if(f==="wrong"&&it.status!=="wrong")return;const d=document.createElement("div");d.className=`glass review-item ${it.status}`;d.innerHTML=`<div style="font-size:.75rem;color:var(--muted)">Q${idx+1} • ${it.subject} (${it.year}) • <strong>${it.status.toUpperCase()}</strong></div><div style="font-weight:600;margin:8px 0">${it.q}</div><div style="font-size:.84rem">Your: <strong>${it.userText}</strong></div><div style="font-size:.84rem;color:#34d399">Correct: <strong>${it.correctText}</strong></div><div class="exp-box"><strong>Solution:</strong> ${it.exp}</div>`;c.appendChild(d)})}
+function renderMistakes(){const l=document.getElementById("mistakes-list");l.innerHTML="";if(!wrongVault.length){l.innerHTML=`<div class="glass" style="padding:28px;text-align:center;color:var(--muted)">No wrong answers yet!</div>`;return}wrongVault.forEach((it,idx)=>{const d=document.createElement("div");d.className="glass review-item wrong";d.innerHTML=`<div style="font-size:.74rem;color:var(--muted)">#${idx+1} • <strong>${it.subject}</strong> (${it.year})</div><div style="font-weight:600;margin:8px 0">${it.q}</div><div style="font-size:.84rem;color:#fda4af">Your Wrong: <strong>${it.userText}</strong></div><div style="font-size:.84rem;color:#34d399">Correct: <strong>${it.correctText}</strong></div><div class="exp-box"><strong>Solution:</strong> ${it.exp}</div>`;l.appendChild(d)})}
+function practiceWrongQuestions(){if(!wrongVault.length){showToast("No wrong questions!");return}const ql=wrongVault.map(w=>w.rawQ).filter(Boolean);startTest("custom",ql,`Mistake Recovery Drill (${ql.length} Qs)`)}
+function clearWrongVault(){if(confirm("Clear wrong answers?")){wrongVault=[];localStorage.removeItem(STORAGE_WRONG_KEY);refreshCounts();renderMistakes();showToast("Cleared.")}}
+function renderHistory(){const l=document.getElementById("history-list");l.innerHTML="";if(!attemptHistory.length){l.innerHTML=`<div class="glass" style="padding:28px;text-align:center;color:var(--muted)">No attempts yet.</div>`;return}attemptHistory.forEach(rec=>{const c=document.createElement("div");c.className="glass history-card";c.innerHTML=`<div class="history-top"><div><div style="font-weight:700">${rec.title}</div><div style="font-size:.75rem;color:var(--muted)">${rec.date} • ${rec.timeUsed}s</div></div><div style="text-align:right"><div style="font-weight:800;color:var(--accent)">${rec.score} / ${rec.maxScore}</div><div style="font-size:.74rem;color:#34d399">Accuracy: ${rec.acc}%</div></div></div><div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:8px;font-size:.78rem;color:var(--muted)"><span>✔ ${rec.correct} | ✘ ${rec.wrong} | ⏭ ${rec.skipped}</span><button class="btn btn-sm" onclick="viewHistoryDetail(${rec.id})">Inspect →</button></div>`;l.appendChild(c)})}
+function viewHistoryDetail(id){const r=attemptHistory.find(x=>x.id===id);if(r)displayScorecard(r)}
+function clearHistory(){if(confirm("Delete all history?")){attemptHistory=[];localStorage.removeItem(STORAGE_HIST_KEY);refreshCounts();renderHistory();showToast("Cleared.")}}
+let examSections=[],sectionIndex=0,sectionDeadline=0,examRunning=false,elapsedSeconds=0,sectionStartedAt=0;
+function toggleMenu(force){const m=document.getElementById("app-menu"),b=document.getElementById("menu-btn");const open=typeof force==="boolean"?force:m.classList.contains("hidden");m.classList.toggle("hidden",!open);b.setAttribute("aria-expanded",String(open))}
+function closeMenu(){toggleMenu(false)}
+function menuGo(tab){closeMenu();switchTab(tab)}
+function applyTheme(t){document.documentElement.dataset.theme=t;const light=t==="light";document.getElementById("theme-label").textContent=light?"Dark mode":"Light mode";document.getElementById("theme-icon").textContent=light?"☾":"☀";const meta=document.querySelector&&document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",light?"#eef3fb":"#090d16")}
+function toggleTheme(){const next=document.documentElement.dataset.theme==="light"?"dark":"light";try{localStorage.setItem("ssc_theme",next)}catch(e){}applyTheme(next)}
+document.addEventListener("click",e=>{const w=document.querySelector(".menu-wrap");if(w&&!w.contains(e.target))closeMenu()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+let currentView="home",viewStack=[];
+function recordView(view){if(currentView!==view){viewStack.push(currentView);currentView=view}}
+function goBack(){if(examRunning&&currentView==="exam"){switchTab("home");return}let target=viewStack.pop()||"home";while(target==="exam"||target==="result"){target=viewStack.pop()||"home"}switchTab(target,false);currentView=target}
+function configureSections(mode,title){const tier=mode==="tier1"||title.includes("Tier 1")?1:mode==="tier2"||title.includes("Tier 2")?2:0;const rules=tier===1?[["Reasoning",900],["GK",900],["Quant",900],["English",900]]:tier===2?[["Quant",1800],["Reasoning",1800],["English",2400],["GK",1200],["Computer",900]]:[...new Set(activeQuestions.map(q=>q.subject))].map(subject=>[subject,activeQuestions.filter(q=>q.subject===subject).length*45]);examSections=rules.filter(([subject])=>activeQuestions.some(q=>q.subject===subject)).map(([subject,seconds])=>({subject,seconds}));sectionIndex=0;elapsedSeconds=0;examRunning=true;}
+function tickRemaining(){if(!examRunning)return;const current=Math.max(0,Math.ceil((sectionDeadline-Date.now())/1000));timeLeft=current+examSections.slice(sectionIndex+1).reduce((n,s)=>n+s.seconds,0)}
+function sectionOpen(){if(!examRunning||currentView!=="exam")return false;if(Date.now()>=sectionDeadline){tickTimer();return false}return true}
+function advanceSection(early){if(!examRunning)return;const previousDeadline=sectionDeadline;if(sectionIndex===examSections.length-1){timeLeft=0;submitExam();return}elapsedSeconds+=Math.min(examSections[sectionIndex].seconds,Math.max(0,(Date.now()-sectionStartedAt)/1000));sectionStartedAt=early?Date.now():previousDeadline;sectionIndex++;activeSubjectTab=examSections[sectionIndex].subject;sectionDeadline=(early?Date.now():previousDeadline)+examSections[sectionIndex].seconds*1000;currentIndex=activeQuestions.findIndex(q=>q.subject===activeSubjectTab);if(Date.now()>=sectionDeadline){advanceSection(false);return}tickRemaining();renderQuestion();updateTimerUI();showToast(`${activeSubjectTab} section started. Previous section locked.`)}
+function finishSectionEarly(){if(!sectionOpen())return;if(confirm("Finish this section? You cannot return to it and unused time will not carry forward."))advanceSection(true)}
+function initPracticeFilters(){const select=document.getElementById("practice-year");for(let y=2026;y>=2017;y--){const option=document.createElement("option");option.value=y;option.textContent=y;select.appendChild(option)}updatePracticeCount()}
+function openSubject(subject){document.getElementById("practice-subject").value=subject;switchTab("subject")}
+function practicePool(){const subject=document.getElementById("practice-subject").value,exam=document.getElementById("practice-exam").value,year=document.getElementById("practice-year").value,shift=document.getElementById("practice-shift").value;return questionBank.filter(q=>(subject==="GS"||subject==="Current Affairs"?q.topic===subject:q.subject===subject)&&(exam==="all"||(q.exams||[]).includes(exam))&&(year==="all"||q.practiceYear===Number(year))&&(shift==="all"||q.shift===Number(shift)))}
+function updatePracticeCount(){const count=practicePool().length;document.getElementById("practice-count").textContent=count?`${count} matching questions. Up to 50 questions per set; 45 seconds per question. Small sets stay within your filters.`:"No questions match these filters. Choose another year, shift, subject or exam.";document.getElementById("practice-start").disabled=!count;}
+function startSubjectPractice(){const pool=practicePool().sort(()=>Math.random()-.5).slice(0,50);const subject=document.getElementById("practice-subject").selectedOptions[0].textContent,exam=document.getElementById("practice-exam").selectedOptions[0].textContent,year=document.getElementById("practice-year").selectedOptions[0].textContent,shift=document.getElementById("practice-shift").selectedOptions[0].textContent;startTest("custom",pool,`${exam} • ${subject} • ${year} • ${shift} • Pattern practice`)}
+
+initApp();
+try{applyTheme(document.documentElement.dataset.theme||"dark")}catch(e){}
+</script>
+</body>
+</html>
